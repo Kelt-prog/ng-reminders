@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Data } from './services/data.service';
 import { LocalStorageService } from './services/local-storage.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+
+interface DataItem {
+  note: string;
+  date: any;
+  id: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -9,27 +15,40 @@ import { LocalStorageService } from './services/local-storage.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'ng-notifications';
-  key: string = 'key';
-  value: string = 'value';
-  endpoint: string = 'https://europe-west1-st-testcase.cloudfunctions.net/';
-  userName: string = '';
   response: any;
   postResponse: any;
   id: any;
   name: string;
   spinner: boolean = false;
+
+  listOfColumn = [
+    {
+      title: 'Сообщение',
+    },
+    {
+      title: 'Время срабатывания',
+      compare: (a: DataItem, b: DataItem) => a.date.localeCompare(b.date),
+    },
+    {
+      title: 'Действия'
+    }
+  ];
+  
   constructor(
-    private http: HttpClient,
     public data: Data,
     public localStorageService: LocalStorageService,
+    private notification: NzNotificationService,
   ) {}
 
-  inputHandler(event: any, type: string) {
-    if (type == 'key') {
-      this.key = event.target.value;
-    }
-    this.value = event.target.value;
+  createBasicNotification(): void {
+    setTimeout(() => {
+      this.notification
+      .blank(
+        'Notification Title',
+        'This is the content of the notification. This is the content of the notification. This is the content of the notification.'
+      )  
+    }, 1000);
+    
   }
 
   ngOnInit() {

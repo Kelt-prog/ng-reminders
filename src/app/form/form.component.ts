@@ -11,9 +11,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
       [formGroup]="validateForm"
       (ngSubmit)="submitReminder()"
       [nzLayout]="'vertical'"
+      nzJustify="center"
+      
     >
       <nz-form-item>
-        <nz-form-control [nzSpan]="12" nzErrorTip="Введите текст напоминания">
+        <nz-form-control  nzErrorTip="Введите текст напоминания">
           <input
             id="reminder-text"
             type="text"
@@ -25,11 +27,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-control [nzSpan]="12" nzErrorTip="Выберите дату">
+        <nz-form-control  nzErrorTip="Выберите дату">
           <nz-date-picker
             nzShowTime
             nzFormat="yyyy-MM-dd HH:mm:ss"
-
             formControlName="formReminderDate"
             (nzOnOk)="onChosenDate($event)"
           >
@@ -37,23 +38,19 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-control [nzSpan]="12">
+        <nz-form-control>
           <button nz-button nzType="primary">
             Создать напоминание
           </button>
-          <hr />
         </nz-form-control>
       </nz-form-item>
     </form>
-    <button nz-button nzType="primary" (click)="this.data.getReminders()">
-      получить список
-    </button>
   `,
   styles: [
     `
       h2 {
         text-align: center;
-        padding-right: 70px;
+        font-size: 30px;
         margin: 50px 0 20px;
       }
       .ant-btn-primary {
@@ -65,6 +62,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
       nz-week-picker {
         margin: 0 8px 12px 0;
         width: 100%;
+      }
+      nz-date-picker {
+        margin: 0 8px 0px 0;
+      }
+      .ant-form {
+        max-width: 400px;
+        margin: auto;
       }
     `,
   ],

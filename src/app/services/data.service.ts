@@ -1,48 +1,56 @@
 import { Injectable } from '@angular/core';
-
-import { LocalStorageService } from './local-storage.service';
 import { HttpClient } from '@angular/common/http';
+import { LocalStorageService } from './local-storage.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Data {
-  key: string = 'key';
-  value: string = 'value';
   endpoint: string = 'https://europe-west1-st-testcase.cloudfunctions.net/';
-  userName: string = '';
   response: any;
-  postResponse: any;
+  //postResponse: any;
   id: any;
   answer: any;
   name: string;
   reminders: any = [];
   spinner: boolean = false;
+
   constructor(
     public localStorageService: LocalStorageService,
-    private http: HttpClient
+    private http: HttpClient,
+    private message: NzMessageService,
   ) {}
+
   persist(key: string, value: any) {
     this.localStorageService.set(key, value);
   }
 
-  getReminders() {
+  createErrorMessage(message: string = "Something went wrong"): void {
+    this.message.error(`Error Message: ${message}`, {
+      nzDuration: 5000,
+      nzPauseOnHover: true,
+    });
+  }
+
+  getReminders(): void {
     this.http
       .get(
         this.endpoint +
-          `api/reminders?userId=${
-            this.localStorageService.get('name', 'id').id
-          }`
+          `api/reminders?userId=${this.id}`
       )
       .subscribe({
         next: (response) => {
             this.reminders = response;
             console.log(response);
         },
-        error: (error) => console.error('There was an error!', error),
+        error: (response) =>{
+          this.createErrorMessage(response.error?.error);
+        }
       });
   }
-  createUser() {
+
+  createUser(): void {
     this.http
       .post<any>(this.endpoint + 'api/auth', {})
       .subscribe((response) => {
@@ -55,7 +63,8 @@ export class Data {
         this.spinner = false;
       });
   }
-  createReminder(reminder?, date?) {
+
+  createReminder(reminder?, date?): void {
       this.http
         .post<any>(
           this.endpoint + `api/reminders?userId=${this.id}`,
@@ -70,13 +79,16 @@ export class Data {
             this.spinner = false;
             console.log('create reminder', this.answer);
           },
-          error: (error) =>{
-            console.error('There was an error!', error);
+          error: (response) => {
+            this.createErrorMessage(response.error?.error);
             this.spinner = false;
           } 
         });
   }
-  updateData() {}
-  deleteData() {}
-  putData() {}
+
+  updateData(): void {}
+
+  deleteData(): void {}
+
+  putData(): void {}
 }

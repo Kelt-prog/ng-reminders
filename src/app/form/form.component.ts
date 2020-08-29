@@ -12,7 +12,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
       (ngSubmit)="submitReminder()"
       [nzLayout]="'vertical'"
       nzJustify="center"
-      
     >
       <nz-form-item>
         <nz-form-control  nzErrorTip="Введите текст напоминания">
@@ -84,7 +83,7 @@ export class Form implements OnInit {
   }
 
   onChosenDate(result: Date): void {
-    this.reminderDate = result.toISOString();
+    this.reminderDate = result;
   }
 
   submitReminder(): void {

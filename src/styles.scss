@@ -30,3 +30,21 @@ nz-spin {
 .ant-spin-container {
   width: 100%;
 }
+
+ .ant-table-title {
+   border-radius: 2px 2px 0 0;
+   text-align: center;
+   font-size: 26px;
+   font-weight: 500;
+   color: #000
+ }
+ 
+ .table-actions {
+   i {
+    padding: 0 5px;
+    font-size: 18px;
+    &:hover {
+      color: #11820e;
+    }
+   }
+ }

@@ -3,51 +3,77 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
+interface ItemData {
+  id: string;
+  date: string;
+  note: string;
+  expired: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class Data {
-  endpoint: string = 'https://europe-west1-st-testcase.cloudfunctions.net/';
+  endpoint: string = 'https://e1urope-west1-st-testcase.cloudfunctions.net/';
   response: any;
-  //postResponse: any;
   id: any;
   answer: any;
   name: string;
   reminders: any = [];
   spinner: boolean = false;
+  tableSpinner: boolean = false;
 
   constructor(
     public localStorageService: LocalStorageService,
     private http: HttpClient,
-    private message: NzMessageService,
+    private message: NzMessageService
   ) {}
 
   persist(key: string, value: any) {
     this.localStorageService.set(key, value);
   }
 
-  createErrorMessage(message: string = "Something went wrong"): void {
+  createErrorMessage(message: string = 'Something went wrong'): void {
     this.message.error(`Error Message: ${message}`, {
       nzDuration: 5000,
       nzPauseOnHover: true,
     });
   }
 
+  setExpiredReminders(reminders): {}[] {
+    const currentDate = new Date();
+    return reminders.map((remind) => {
+      const formatedDate = new Date(remind.date);
+      remind.expired = formatedDate < currentDate;
+      return remind;
+    });
+  }
+
+  editCache: { [key: string]: { edit: boolean; data: ItemData } } = {};
+
+  updateEditCache(): void {
+    this.reminders.forEach((item) => {
+      this.editCache[item.id] = {
+        edit: false,
+        data: { ...item },
+      };
+    });
+    console.log(this.reminders);
+    console.log(this.editCache);
+  }
+
   getReminders(): void {
-    this.http
-      .get(
-        this.endpoint +
-          `api/reminders?userId=${this.id}`
-      )
-      .subscribe({
-        next: (response) => {
-            this.reminders = response;
-            console.log(response);
-        },
-        error: (response) =>{
-          this.createErrorMessage(response.error?.error);
-        }
-      });
+    this.http.get(this.endpoint + `api/reminders?userId=${this.id}`).subscribe({
+      next: (response) => {
+        this.reminders = this.setExpiredReminders(response);
+        this.tableSpinner = false;
+        this.updateEditCache();
+      },
+      error: (response) => {
+        this.createErrorMessage(response.error?.error);
+        this.tableSpinner = false;
+      },
+    });
   }
 
   createUser(): void {
@@ -64,31 +90,58 @@ export class Data {
       });
   }
 
-  createReminder(reminder?, date?): void {
-      this.http
-        .post<any>(
-          this.endpoint + `api/reminders?userId=${this.id}`,
-          {
-            note: reminder,
-            date: date,
-          }
-        )
-        .subscribe({
-          next: (response) => {
-            this.answer = response;
-            this.spinner = false;
-            console.log('create reminder', this.answer);
-          },
-          error: (response) => {
-            this.createErrorMessage(response.error?.error);
-            this.spinner = false;
-          } 
-        });
+  createReminder(note?, date?): void {
+    this.http
+      .post<any>(this.endpoint + `api/reminders?userId=${this.id}`, {
+        note,
+        date,
+      })
+      .subscribe({
+        next: (response) => {
+          this.answer = response;
+          this.spinner = false;
+          this.getReminders();
+          console.log('create reminder', this.answer);
+        },
+        error: (response) => {
+          this.createErrorMessage(response.error?.error);
+          this.spinner = false;
+        },
+      });
   }
 
-  updateData(): void {}
+  updateReminder(reminderId: string, note: string, date: string): void {
+    this.http
+      .put<any>(
+        this.endpoint + `api/reminders/${reminderId}?userId=${this.id}`,
+        { note, date, })
+      .subscribe({
+        next: (response) => {
+          console.log('обновлено');
+        },
+        error: (response) => {
+          this.createErrorMessage(response.error?.error);
+        },
+      });
+  }
 
-  deleteData(): void {}
+  deleteReminder(reminderId): void {
+    const filteredReminders = this.reminders.filter(
+      (remind) => remind.id !== reminderId
+    );
+    this.reminders = filteredReminders;
 
-  putData(): void {}
+    this.http
+      .delete<any>(
+        this.endpoint + `api/reminders/${reminderId}?userId=${this.id}`
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('удалено из базы');
+        },
+        error: (response) => {
+          this.createErrorMessage(response.error?.error);
+        },
+      });
+  }
 }

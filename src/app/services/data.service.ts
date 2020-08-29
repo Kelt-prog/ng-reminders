@@ -14,13 +14,12 @@ interface ItemData {
   providedIn: 'root',
 })
 export class Data {
-  endpoint: string = 'https://e1urope-west1-st-testcase.cloudfunctions.net/';
+  endpoint: string = 'https://eu1rope-west1-st-testcase.cloudfunctions.net/';
   response: any;
   id: any;
   answer: any;
   name: string;
   reminders: any = [];
-  spinner: boolean = false;
   tableSpinner: boolean = false;
 
   constructor(
@@ -86,7 +85,6 @@ export class Data {
         this.localStorageService.set('name', this.name);
         console.log(response);
         console.log(this.id, this.name);
-        this.spinner = false;
       });
   }
 
@@ -99,13 +97,11 @@ export class Data {
       .subscribe({
         next: (response) => {
           this.answer = response;
-          this.spinner = false;
           this.getReminders();
           console.log('create reminder', this.answer);
         },
         error: (response) => {
           this.createErrorMessage(response.error?.error);
-          this.spinner = false;
         },
       });
   }

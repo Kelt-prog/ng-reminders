@@ -1,0 +1,39 @@
+<div class="add-reminder">
+  <h2>Создать напоминание</h2>
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    (ngSubmit)="submitReminder()"
+    [nzLayout]="'vertical'"
+    nzJustify="center"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Введите текст напоминания">
+        <input
+          id="reminder-text"
+          type="text"
+          formControlName="formReminderText"
+          nz-input
+          (change)="onChangeReminderText($event.target.value)"
+          placeholder="Введите текст напоминания"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Выберите дату">
+        <nz-date-picker
+          nzShowTime
+          nzFormat="yyyy-MM-dd HH:mm:ss"
+          formControlName="formReminderDate"
+          (nzOnOk)="onChosenDate($event)"
+        >
+        </nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary">Создать напоминание</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>

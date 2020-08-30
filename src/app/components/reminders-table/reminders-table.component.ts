@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Data } from '../../services/data.service';
 import { LocalStorageService } from '../../services/local-storage.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzMessageService } from 'ng-zorro-antd/message';
 
-interface DataItem {
+
+interface ReminderItem {
   note: string;
   date: any;
   id: string;
+  expired?: boolean;
 }
 
 @Component({
@@ -18,8 +18,24 @@ export class RemindersTableComponent implements OnInit {
   constructor(
     public data: Data,
     public localStorageService: LocalStorageService,
-    private notification: NzNotificationService,
-    private nzMessageService: NzMessageService) {}
+  ) {}
+
+
+  listOfColumn = [
+    {
+      title: 'Сообщение',
+    },
+    {
+      title: 'Время срабатывания',
+      compare: (a: ReminderItem, b: ReminderItem) => a.date.localeCompare(b.date),
+    },
+    {
+      title: 'Действия',
+    },
+    {
+      title: 'Истекло/Активно',
+    },
+  ];
 
   startEdit(id: string): void {
     this.data.editCache[id].edit = true;
@@ -45,21 +61,6 @@ export class RemindersTableComponent implements OnInit {
     );
   }
 
-  listOfColumn = [
-    {
-      title: 'Сообщение',
-    },
-    {
-      title: 'Время срабатывания',
-      compare: (a: DataItem, b: DataItem) => a.date.localeCompare(b.date),
-    },
-    {
-      title: 'Действия',
-    },
-    {
-      title: 'Истекло/Активно',
-    },
-  ];
-
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }

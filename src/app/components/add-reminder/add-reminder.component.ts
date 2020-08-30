@@ -13,7 +13,7 @@ export class AddReminderComponent implements OnInit {
   reminderDate: any;
   validateForm!: FormGroup;
 
-  onChangeReminderText(text) {
+  onChangeReminderText(text: string) {
     this.reminderText = text;
   }
 
@@ -27,7 +27,6 @@ export class AddReminderComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     if (this.validateForm.valid) {
-      this.data.spinner = true;
       this.data.createReminder(this.reminderText, this.reminderDate);
       this.validateForm.reset();
     }

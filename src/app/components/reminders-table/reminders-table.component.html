@@ -1,7 +1,7 @@
 <nz-table #sortTable [nzData]="data.reminders" [nzTitle]="'Список напоминаний'" [nzLoading]="data.tableSpinner">
   <thead>
     <tr>
-      <th [nzWidth]="'150px'" *ngFor="let column of listOfColumn" [nzSortFn]="column.compare">
+      <th [nzWidth]="'250px'" *ngFor="let column of listOfColumn" [nzSortFn]="column.compare">
         {{ column.title }}
       </th>
     </tr>
@@ -9,13 +9,13 @@
   <tbody>
     <tr *ngFor="let remind of sortTable.data">
       <ng-container *ngIf="!data.editCache[remind.id].edit; else editTemplate">
-        <td >{{ remind.note }}</td>
+        <td>{{ remind.note }}</td>
         <td>{{ remind.date | date: "short":"undefined":"ru_RU" }}</td>
         <td class="table-actions">
-          <a nz-tooltip nzTooltipTitle="Запустить напоминание" (click)="createBasicNotification(remind.note)"><i nz-icon
-              nzType="play-circle" nzTheme="outline"></i></a>
-          <a nz-tooltip nzTooltipTitle="Редактировать напоминание" (click)="startEdit(remind.id)"><i nz-icon
-              nzType="edit" nzTheme="outline"></i></a>
+          <a nz-tooltip nzTooltipTitle="Запустить напоминание" (click)="data.createBasicNotification(remind.note)">
+            <i nz-icon nzType="play-circle" nzTheme="outline"></i></a>
+          <a nz-tooltip nzTooltipTitle="Редактировать напоминание" (click)="startEdit(remind.id)">
+            <i nz-icon nzType="edit" nzTheme="outline"></i></a>
           <a nz-tooltip nzTooltipTitle="Удалить напоминание" nz-popconfirm
             nzPopconfirmTitle="Вы уверены что хотите удалить напоминание?" nzPopconfirmPlacement="top"
             (nzOnConfirm)="data.deleteReminder(remind.id)"><i nz-icon nzType="delete" nzTheme="outline"></i></a>
@@ -32,13 +32,17 @@
           <input type="text" nz-input [(ngModel)]="data.editCache[remind.id].data.note" />
         </td>
         <td>
-          <nz-date-picker nzShowTime nzFormat="dd-MM-yyyy HH:mm:ss" [(ngModel)]="data.editCache[remind.id].data.date">
+          <nz-date-picker nzShowTime nzFormat="dd-MM-yyyy HH:mm:ss"
+                          [(ngModel)]="data.editCache[remind.id].data.date">
           </nz-date-picker>
         </td>
         <td class="table-actions">
-          <a nz-tooltip nzTooltipTitle="Сохранить изменения" (click)="saveEdit(remind.id)" class="save"><i nz-icon nzType="save" nzTheme="fill"></i></a>
-          <a nz-tooltip nzTooltipTitle="Отменить" nz-popconfirm nzPopconfirmTitle="Уверены что хотите отменить?" (nzOnConfirm)="cancelEdit(remind.id)"><i
-              nz-icon nzType="close-circle" nzTheme="fill"></i></a>
+          <a nz-tooltip nzTooltipTitle="Сохранить изменения" nz-popconfirm
+            nzPopconfirmTitle="Уверены что хотите сохранить?" (nzOnConfirm)="saveEdit(remind.id)" class="save">
+            <i nz-icon nzType="save" nzTheme="fill"></i></a>
+          <a nz-tooltip nzTooltipTitle="Отменить" (click)="cancelEdit(remind.id)">
+            <i nz-icon nzType="close-circle" nzTheme="fill"></i>
+          </a>
         </td>
         <td [ngClass]="{
             'expired-remind': remind.expired,

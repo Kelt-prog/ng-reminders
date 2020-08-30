@@ -14,6 +14,7 @@ import { RemindersTableComponent } from './components/reminders-table/reminders-
 import { LoaderComponent } from './components/loader/loader.component';
 import { LoaderService } from './services/loader.service';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { ApiService } from './services/api.service';
 // Ant Design Angular Components
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -59,7 +60,7 @@ registerLocaleData(ru);
     NzToolTipModule,
   ],
   providers: [
-    LoaderService,
+    LoaderService, ApiService,
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     { provide: NZ_I18N, useValue: ru_RU },
   ],

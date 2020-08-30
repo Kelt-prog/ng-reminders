@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Data } from '../../services/data.service';
+import { DataService } from '../../services/data.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 
 
@@ -16,7 +16,7 @@ interface ReminderItem {
 })
 export class RemindersTableComponent implements OnInit {
   constructor(
-    public data: Data,
+    public data: DataService,
     public localStorageService: LocalStorageService,
   ) {}
 

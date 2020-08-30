@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Data } from '../../services/data.service';
+import { DataService } from '../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./add-reminder.component.scss'],
 })
 export class AddReminderComponent implements OnInit {
-  constructor(public data: Data, private fb: FormBuilder) {}
+  constructor(public data: DataService, private fb: FormBuilder) {}
   reminderText: string;
   reminderDate: any;
   validateForm!: FormGroup;

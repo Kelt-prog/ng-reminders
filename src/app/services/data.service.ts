@@ -3,7 +3,7 @@ import { LocalStorageService } from './local-storage.service';
 import { ApiService } from './api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Howl, Howler } from 'howler';
+import { Howl } from 'howler';
 
 interface ReminderData {
   id: string;
@@ -54,7 +54,9 @@ export class DataService {
     activeReminders.forEach((item) => {
       const currentDate = new Date();
       const reminderDate = new Date(item.date);
-      const msToActivate = reminderDate.getTime() - currentDate.getTime();
+      let msToActivate = reminderDate.getTime() - currentDate.getTime();
+      // максимальный тайм-аут не должен превышать 2147483647, иначе он становится 1 и оповещение сразу вызывается
+      if (msToActivate > 2000000000) msToActivate = 2000000000;
       this.arrayOfTimeouts.push({
         id: item.id,
         func: setTimeout(() => {
@@ -96,12 +98,14 @@ export class DataService {
 
   setExpiredReminders(reminders): ReminderData[] {
     const currentDate = new Date();
-    return reminders.map((remind) => {
-      const formatedDate = new Date(remind.date);
-      remind.expired = formatedDate < currentDate;
+    const result = [];
 
-      return remind;
+    reminders.forEach(item => {
+      const formatedDate = new Date(item.date);
+      item.expired = formatedDate.getTime() < currentDate.getTime();
+      result.push(item);
     });
+    return result;
   }
 
   getReminders(): void {

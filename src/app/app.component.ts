@@ -15,16 +15,13 @@ interface DataItem {
 export class AppComponent implements OnInit {
   constructor(
     public data: DataService,
-    public localStorageService: LocalStorageService,
+    public localStorageService: LocalStorageService
   ) {}
-  displaySum(sum) {
-    console.log(sum);
-}
 
   ngOnInit() {
     const checkIUserExist = this.localStorageService.get('user');
     if (checkIUserExist != null && checkIUserExist.id != null) {
-      this.data.user = {name: checkIUserExist.name, id: checkIUserExist.id } ;
+      this.data.user = { name: checkIUserExist.name, id: checkIUserExist.id };
       console.log('юзер в локал сторедж');
       this.data.getReminders();
     } else {

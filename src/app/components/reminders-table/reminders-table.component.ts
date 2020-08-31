@@ -1,7 +1,6 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { LocalStorageService } from '../../services/local-storage.service';
-
 
 interface ReminderItem {
   note: string;
@@ -17,24 +16,15 @@ interface ReminderItem {
 export class RemindersTableComponent implements OnInit {
   constructor(
     public data: DataService,
-    public localStorageService: LocalStorageService,
+    public localStorageService: LocalStorageService
   ) {}
 
-
   listOfColumn = [
-    {
-      title: 'Сообщение',
-    },
-    {
-      title: 'Время срабатывания',
-      compare: (a: ReminderItem, b: ReminderItem) => a.date.localeCompare(b.date),
-    },
-    {
-      title: 'Действия',
-    },
-    {
-      title: 'Истекло/Активно',
-    },
+    { title: 'Сообщение' },
+    { title: 'Время срабатывания',
+      compare: (a: ReminderItem, b: ReminderItem) => a.date.localeCompare(b.date) },
+    { title: 'Действия'},
+    { title: 'Истекло/Активно'},
   ];
 
   startEdit(id: string): void {
@@ -61,6 +51,5 @@ export class RemindersTableComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

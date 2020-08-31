@@ -143,15 +143,22 @@ export class DataService {
     });
   }
 
-  createReminder(note?, date?): void {
-    this.api.createReminder(this.user.id, note, date).subscribe({
-      next: (response) => {
-        this.getReminders();
-      },
-      error: (response) => {
-        this.createErrorMessage(response.error?.error);
-      },
-    });
+  createReminder(note: string, date: string): void {
+    const checkForDuplicates = this.reminders.some(item => item.note === note);
+    if (checkForDuplicates) {
+      this.createErrorMessage(
+        'Напоминание с данным текстом уже существует',
+      );
+    } else {
+      this.api.createReminder(this.user.id, note, date).subscribe({
+        next: (response) => {
+          this.getReminders();
+        },
+        error: (response) => {
+          this.createErrorMessage(response.error?.error);
+        },
+      });
+    }
   }
 
   updateReminder(reminderId: string, note: string, date: string): void {
